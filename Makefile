@@ -1,4 +1,4 @@
 all:
-	gcc main.c
+	g++ main.cpp
 clean:
 	rm -f *.o *.out *.exe
