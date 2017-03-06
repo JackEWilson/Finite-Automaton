@@ -13,7 +13,7 @@ int main(int argc, char *argv[]){
 	vector<char> alphabet;//E, Alphabet
 	int qZero;//q0, Starting state
 	vector<int> accepting;//T, accepting states
-	string line5;// where transitiosn will be stored
+//	string line5;// where transitiosn will be stored
 
 	ifstream file (argv[1]);
 	
@@ -67,6 +67,40 @@ int main(int argc, char *argv[]){
 		cout << p2[i];
 		cout << p3[i] << endl;
 	}
+	
+	int st = qZero;
+	int iter = 0;
+//	cout << alphabet.size() << endl;
+	for(int i = 0; i<alphabet.size(); i++){
+		for(int j = 0; j<p1.size(); j++){
+			if(st == p1[j]){
+				if(alphabet[i] == p2[j]){
+					cout << alphabet[i] << endl;
+					iter++;
+					cout << iter << endl;
+					st = p3[j];
+					break;
+				}
+			}		 
+		}
+	}
+	bool ace = false;
+	for(int i = 0; i<accepting.size(); i++){
+		if(st == accepting[i]){
+			ace = true;
+		}
+	}
+//	cout << iter << endl;
+//	cout << alphabet.size() << endl;
+	
+	if(iter == alphabet.size() && ace){
+		cout << "accepted" << endl;
+	}
 
 	return 0;
 }
+
+
+
+
+
