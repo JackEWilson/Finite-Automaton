@@ -5,27 +5,35 @@
 #include <cstring>
 #include <vector>
 #include <istream>
+#include <map>
 
 using namespace std;
 
+struct stateObj{
+	bool accept;
+	map<char, int> transition;
+};
+
 int main(int argc, char *argv[]){
-	vector<int> states;//Q, set of states
 	vector<char> alphabet;//E, Alphabet
 	int qZero;//q0, Starting state
-	vector<int> accepting;//T, accepting states
-//	string line5;// where transitiosn will be stored
 
 	ifstream file (argv[1]);
-	
+	map<int, stateObj*> states;	
+
 	bool check = true;;
 	int x = 0;
 	while(check){                    
 		file >> x;
-		states.push_back(x); //first line
+		cout << x << endl;
+		stateObj *newState = new stateObj;
+		states[x] = newState;
 		if(file.peek() == '\n'){
 			check = false;
 		}
 	}
+
+	cout << "here" << endl;
 	check = true;
 	char y;
 	while(check){
@@ -35,68 +43,81 @@ int main(int argc, char *argv[]){
 			check = false;
 		}
 	}
+
 	file >> qZero; 		       //third line
+
 	check = true;
 	while(check){                    
-		file >> x;         
-		accepting.push_back(x); //fourth line
+		file >> x;
+		states[x]->accept = true;         
 		if(file.peek() == '\n'){
 			check = false;
 		}
 	}
-
-	vector<int> p1;
-	vector<char> p2;
-	vector<int> p3;
 	
+	cout << qZero;
+	if(states[qZero]->accept){
+		cout << "*" << endl;
+	}
+	else{
+		cout << endl;
+	}
+
+	int z;	
 	check = true;
 	while(check){                   
-		file >> x;         
-		p1.push_back(x);
-		file >> y;
-		p2.push_back(y);
 		file >> x;
-		p3.push_back(x);
+		cout << x << ",";
+		file >> y;
+		cout << y << " -> ";
+		file >> z;
+		cout << z;
+		if(states[z]->accept){
+			cout << "*" << endl;
+		}
+		else{
+			cout << endl;
+		}
+		states[x]->transition[y] = z;// << endl;//->transition[y] = z;
 		if(file.peek() == EOF){
 			check = false;
 		}
 	}
-
-	for(int i = 0; i<p1.size(); i++){
-		cout << p1[i];
-		cout << p2[i];
-		cout << p3[i] << endl;
-	}
 	
-	int st = qZero;
-	int iter = 0;
-//	cout << alphabet.size() << endl;
-	for(int i = 0; i<alphabet.size(); i++){
-		for(int j = 0; j<p1.size(); j++){
-			if(st == p1[j]){
-				if(alphabet[i] == p2[j]){
-					cout << alphabet[i] << endl;
-					iter++;
-					cout << iter << endl;
-					st = p3[j];
-					break;
-				}
-			}		 
+	cout << "Enter a stringer to check" << endl;	
+	string user;
+	vector<char> input;
+	int st;
+	while(getline(cin, user)){
+		st = qZero;
+		for(int i = 0; i<user.size(); i++){
+			if(&user[i] != " "){
+				input.push_back(user[i]);
+			}
 		}
-	}
-	bool ace = false;
-	for(int i = 0; i<accepting.size(); i++){
-		if(st == accepting[i]){
-			ace = true;
+		cout << st;
+		if(states[st]->accept){
+			cout << "*";
 		}
-	}
-//	cout << iter << endl;
-//	cout << alphabet.size() << endl;
-	
-	if(iter == alphabet.size() && ace){
-		cout << "accepted" << endl;
+		for(int i = 0; i<input.size(); i++){
+			st = states[st]->transition[input[i]];
+			cout << " -> " << st;            
+        	if(states[st]->accept){
+        		cout << "*";
+        	}
+		}
+		cout << endl;
+		cout << "=====================" << endl;
+		if(states[st]->accept){
+			cout << "Accepted" << endl;
+		}
+		else{
+			cout << "Rejected" << endl;
+		}
+		input.clear();
 	}
 
+	states.clear();
 	return 0;
 }
 
