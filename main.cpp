@@ -9,15 +9,12 @@
 
 using namespace std;
 
-
-
-
 struct stateObj{
 	bool accept;
 	map<char, int> transition;
 };
 
-void quit(map<int, stateObj*> states){
+void quit(map<int, stateObj*> states){//Frees memory and exits
 	states.erase(states.begin(), states.end());
 	exit(1);
 }
@@ -28,12 +25,16 @@ int main(int argc, char *argv[]){
 	ifstream file (argv[1]);
 	map<int, stateObj*> states;	
 
+	if(argc == 1){
+		fprintf(stderr, "Not enough arguments provided \n");
+		quit(states);
+	}
 	bool check = true;;
 	int x = 0;
 	while(check){           //Reads first line         
 		file >> x;
 		stateObj *newState = new stateObj;
-		states[x] = newState;
+		states[x] = newState; //Reads in integer(from # of states) and then maps it to a state object.
 		if(file.peek() == '\n'){
 			check = false;
 		}
@@ -54,7 +55,7 @@ int main(int argc, char *argv[]){
 	check = true;
 	while(check){           //Reads fourth line 
 		file >> x;
-		states[x]->accept = true;         
+		states[x]->accept = true;         //Tells which states are accepting
 		if(file.peek() == '\n'){
 			check = false;
 		}
@@ -117,7 +118,7 @@ int main(int argc, char *argv[]){
 			cout << "*";
 		}
 		for(int i = 0; i<input.size(); i++){ 
-			st = states[st]->transition[input[i]]; //This line moves through the states
+			st = states[st]->transition[input[i]]; //This line moves through the states depending on user input
 			cout << " -> " << st;            
         	if(states[st]->accept){
         		cout << "*";
